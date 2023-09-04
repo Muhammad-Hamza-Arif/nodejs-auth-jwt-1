@@ -24,9 +24,16 @@ const getAll = async (req, res, next) => {
 };
 
 const updateById = async (req, res, next) => {
+  console.log("hello >>>>>>",req.body);
   try {
-    await movieModel.findByIdAndUpdate(req.params.movieId, { name: req.body.name });
-    res.json({ status: "success", message: "Movie updated successfully!!!", data: null });
+    await movieModel.findByIdAndUpdate(req.params.movieId, { name: req.body.name, released_on: req.body.released_on });
+    // const movies = await movieModel.find({});
+    // const moviesList = movies.map(movie => ({
+    //   id: movie._id,
+    //   name: movie.name,
+    //   released_on: movie.released_on
+    // }));
+    res.json({ status: "success", message: "Movie updated successfully!!!",  data: null });
   } catch (error) {
     next(error);
   }
@@ -35,6 +42,7 @@ const updateById = async (req, res, next) => {
 const deleteById = async (req, res, next) => {
   try {
     await movieModel.findByIdAndRemove(req.params.movieId);
+    
     res.json({ status: "success", message: "Movie deleted successfully!!!", data: null });
   } catch (error) {
     next(error);

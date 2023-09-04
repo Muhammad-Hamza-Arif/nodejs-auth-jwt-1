@@ -4,12 +4,20 @@ const cors = require('cors');
 const movies = require('./routes/movies') ;
 const users = require('./routes/users');
 const bodyParser = require('body-parser');
-const mongoose = require('./config/database'); //database configuration
+const mongoose = require('mongoose'); //database configuration
 var jwt = require('jsonwebtoken');
 const app = express();
+require('dotenv').config();
 app.set('secretKey', 'nodeRestApi'); // jwt secret token
 // connection to mongodb
-mongoose.connection.on('error', console.error.bind(console, 'MongoDB connection error:'));
+mongoose
+    .connect(process.env.MONGO_URI, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+
+    })
+    .then(() => console.log('MongoDB database Connected...'))
+    .catch((err) => console.log(err))
 app.use(logger('dev'));
 app.use(cors());
 app.use(bodyParser.json());
@@ -20,11 +28,14 @@ res.json({"tutorial" : "Build REST API with node.js"});
 app.use('/users', users);
 // private route
 app.use('/movies', validateUser, movies);
-app.get('/favicon.ico', function(req, res) {
-    res.sendStatus(204);
-});
+// app.get('/favicon.ico', function(req, res) {
+//     res.sendStatus(204);
+// });
 function validateUser(req, res, next) {
-  jwt.verify(req.headers['x-access-token'], req.app.get('secretKey'), function(err, decoded) {
+  console.log('x-acesss-token  >>>>>>>', req.headers['x-access-token'])
+  console.log('secret-key>>>>>>>', req.app.get('secretKey'))
+  
+  jwt.verify(req.headers['x-access-token'].split(' ')[1], req.app.get('secretKey'), function (err, decoded) {
     if (err) {
       res.json({status:"error", message: err.message, data:null});
     }else{
@@ -51,6 +62,4 @@ app.use(function(err, req, res, next) {
   else 
     res.status(500).json({message: "Something looks wrong :( !!!"});
 });
-app.listen(3000, function(){
- console.log('Node server listening on port 3000');
-});
+app.listen(process.env.PORT, () => console.log(`App listening at http://localhost:${process.env.PORT}`))
