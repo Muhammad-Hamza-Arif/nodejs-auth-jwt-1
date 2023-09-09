@@ -15,7 +15,9 @@ const getAll = async (req, res, next) => {
     const moviesList = movies.map(movie => ({
       id: movie._id,
       name: movie.name,
-      released_on: movie.released_on
+      released_on: movie.released_on,
+      seats: movie.seats,
+      price: movie.price
     }));
     res.json({ status: "success", message: "Movies list found!!!", data: { movies: moviesList } });
   } catch (error) {
@@ -51,7 +53,15 @@ const deleteById = async (req, res, next) => {
 
 const create = async (req, res, next) => {
   try {
-    await movieModel.create({ name: req.body.name, released_on: req.body.released_on });
+    const newMovie = {
+      name: req.body.name,
+      released_on: req.body.released_on,
+      seats: req.body.seats,
+      price: 100
+
+    };
+    console.log("movie", newMovie)
+    await movieModel.create(newMovie);
     res.json({ status: "success", message: "Movie added successfully!!!", data: null });
   } catch (error) {
     next(error);

@@ -32,10 +32,8 @@ app.use('/movies', validateUser, movies);
 //     res.sendStatus(204);
 // });
 function validateUser(req, res, next) {
-  console.log('x-acesss-token  >>>>>>>', req.headers['x-access-token'])
-  console.log('secret-key>>>>>>>', req.app.get('secretKey'))
-  
-  jwt.verify(req.headers['x-access-token'].split(' ')[1], req.app.get('secretKey'), function (err, decoded) {
+  console.log(req.headers['x-access-token'])
+  jwt.verify(req.headers['x-access-token'], req.app.get('secretKey'), function(err, decoded) {
     if (err) {
       res.json({status:"error", message: err.message, data:null});
     }else{

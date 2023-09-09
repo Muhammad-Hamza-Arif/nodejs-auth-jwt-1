@@ -134,10 +134,10 @@ module.exports = {
     }
   },
   updateRoledUser: async (req, res) => {
-    console.log("backend console ", req.body.data.updateRole);
+    console.log("backend console 123", req.body.role);
     try {
       await userModel.findByIdAndUpdate(req.params.userId, {
-        role: req.body.data.updateRole,
+        role: req.body.role,
       });
       //     const users = await userModel.find({});
       //  const userList = users.map(users => ({
